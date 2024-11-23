@@ -1,0 +1,191 @@
+-- PROCEDURES - PROCEDIMIENTOS
+CREATE OR REPLACE PROCEDURE PR1
+IS
+  x NUMBER:=10;
+BEGIN
+  dbms_output.put_line(x);
+END;
+
+--USER_OBJECTS
+SELECT * FROM USER_OBJECTS WHERE OBJECT_TYPE='PROCEDURE';
+
+SELECT OBJECT_TYPE, COUNT(*) FROM USER_OBJECTS 
+GROUP BY OBJECT_TYPE;
+
+SELECT * FROM USER_SOURCE WHERE NAME='PR1';
+
+SELECT TEXT FROM USER_SOURCE WHERE NAME='PR1';
+
+-- PARAMETROS
+/*
+- IN --> PLSQL --> PROCEDURE -- constante
+- OUT   PLSQL <----- PROCEDURE -- Variable
+- IN/OUT
+*/
+
+CREATE OR REPLACE PROCEDURE CALC_TAX
+(emp IN EMPLOYEES.EMPLOYEE_ID%TYPE, T IN NUMBER)
+IS
+  TAX NUMBER:=0;
+  SAL NUMBER:=0;
+BEGIN
+  IF T < 0 OR T > 60 THEN
+    RAISE_APPLICATION_ERROR(-20001,'EL PORCENTAJE DEBE ESTAR ENTRE 0 y 60');
+  END IF;
+  SELECT SALARY INTO SAL FROM EMPLOYEES WHERE EMPLOYEE_ID=emp;
+  --T:=10;
+  TAX:=SAL*T/100;
+  dbms_output.put_line('Salario: '||SAL);
+  dbms_output.put_line('IVA: ' ||TAX);
+EXCEPTION
+  WHEN NO_DATA_FOUND THEN
+    dbms_output.put_line('NO EXITESTE EL EMPLEADO!');
+END;
+
+-- OUT
+
+CREATE OR REPLACE PROCEDURE CALC_TAX
+(emp IN EMPLOYEES.EMPLOYEE_ID%TYPE, 
+  T IN NUMBER,
+  R1 OUT NUMBER)
+IS
+  --TAX NUMBER:=0;
+  SAL NUMBER:=0;
+BEGIN
+  IF T < 0 OR T > 60 THEN
+    RAISE_APPLICATION_ERROR(-20001,'EL PORCENTAJE DEBE ESTAR ENTRE 0 y 60');
+  END IF;
+  SELECT SALARY INTO SAL FROM EMPLOYEES WHERE EMPLOYEE_ID=emp;
+  --T:=10;
+  R1:=SAL*T/100;
+  dbms_output.put_line('Salario: '||SAL);
+  --dbms_output.put_line('IVA: ' ||TAX);
+EXCEPTION
+  WHEN NO_DATA_FOUND THEN
+    dbms_output.put_line('NO EXITESTE EL EMPLEADO!');
+END;
+
+--PARAMETROS DE TIPO IN/OUT
+
+
+CREATE OR REPLACE PROCEDURE CALC_TAX_IN_OUT
+(emp IN EMPLOYEES.EMPLOYEE_ID%TYPE, 
+  T1 IN OUT NUMBER)
+IS
+  SAL NUMBER:=0;
+BEGIN
+  IF T1 < 0 OR T1 > 60 THEN
+    RAISE_APPLICATION_ERROR(-20001,'EL PORCENTAJE DEBE ESTAR ENTRE 0 y 60');
+  END IF;
+  SELECT SALARY INTO SAL FROM EMPLOYEES WHERE EMPLOYEE_ID=emp;
+  dbms_output.put_line('T1 = '||T1);
+  T1:=SAL*T1/100; -- Modifico el parametro
+  dbms_output.put_line('Salario: '||SAL);
+  --dbms_output.put_line('IVA: ' ||TAX);
+EXCEPTION
+  WHEN NO_DATA_FOUND THEN
+    dbms_output.put_line('NO EXITESTE EL EMPLEADO!');
+END;
+
+-- Ejerciico 01
+
+CREATE OR REPLACE PROCEDURE visualizar
+IS
+  CURSOR C1 IS SELECT FIRST_NAME, SALARY FROM EMPLOYEES;
+  nombre EMPLOYEES.FIRST_NAME%TYPE;
+  salario EMPLOYEES.SALARY%TYPE;
+BEGIN
+  FOR i IN C1 LOOP
+    dbms_output.put_line(i.FIRST_NAME||' '||i.SALARY);
+  END LOOP;
+END;
+
+EXECUTE visualizar;
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

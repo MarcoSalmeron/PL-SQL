@@ -1,0 +1,228 @@
+SET SERVEROUTPUT ON
+DECLARE
+  TYPE DEPARTAMENTOS IS TABLE OF
+    DEPARTMENTS%ROWTYPE
+  INDEX BY PLS_INTEGER;
+  
+  dep DEPARTAMENTOS;
+BEGIN
+  FOR I IN 1..10 LOOP
+    SELECT * INTO dep(I) FROM DEPARTMENTS WHERE DEPARTMENT_ID = I*10;
+  END LOOP;
+  
+  FOR I IN dep.FIRST..dep.LAST LOOP
+    dbms_output.put_line(dep(I).DEPARTMENT_NAME);
+  END LOOP;
+END;
+-- CURSORES
+-- IMPLICITOS 
+--EXPLICITOS
+DECLARE 
+  x NUMBER;
+BEGIN
+  UPDATE TEST SET C2='PPPPP' WHERE C1 = 12;
+  dbms_output.put_line(SQL%ROWCOUNT);
+  IF SQL%FOUND THEN
+    dbms_output.put_line('Encontrado');
+  END IF;
+  IF SQL%NOTFOUND THEN
+    dbms_output.put_line('No Encontrado');
+  END IF;
+  SELECT C1 INTO x FROM TEST WHERE C1=1000;
+  IF SQL%NOTFOUND THEN
+    dbms_output.put_line('La Fila no Existe!');
+  END IF;
+END;
+
+--EXPLICITOS
+DECLARE
+  CURSOR C1 IS SELECT * FROM REGIONS; -- Esta vacio
+  V1 REGIONS%ROWTYPE;
+BEGIN
+  OPEN C1;
+  FETCH C1 INTO V1;
+  dbms_output.put_line(V1.REGION_NAME);
+  FETCH C1 INTO V1;
+  dbms_output.put_line(V1.REGION_NAME);
+  FETCH C1 INTO V1;
+  dbms_output.put_line(V1.REGION_NAME);
+  CLOSE C1;
+END;
+
+/*
+C1%NOTFOUND
+C1%FOUND
+C1%ISOPEN
+C1%ROWCOUNT
+*/
+-- RECORRER UN CURSOR
+
+DECLARE
+  CURSOR C1 IS SELECT * FROM REGIONS; -- Esta vacio
+  V1 REGIONS%ROWTYPE;
+BEGIN
+  OPEN C1;
+  LOOP
+    FETCH C1 INTO V1;
+    EXIT WHEN C1%NOTFOUND;
+    dbms_output.put_line(V1.REGION_NAME);
+  END LOOP;
+  CLOSE C1;
+END;
+
+-- BUCLE FOR
+DECLARE
+  CURSOR C1 IS SELECT * FROM REGIONS; -- Esta vacio
+BEGIN
+  FOR i IN C1 LOOP
+    dbms_output.put_line(i.REGION_NAME);
+  END LOOP;
+END;
+
+-- BUCLE FOR CON SUBQUERIES
+BEGIN
+  FOR i IN (SELECT * FROM REGIONS) LOOP
+    dbms_output.put_line(i.REGION_NAME);
+  END LOOP;
+END;
+
+-- CURSORES CON PARAMETRO
+
+DECLARE
+  CURSOR C1(SAL NUMBER) IS SELECT * FROM EMPLOYEES
+  WHERE SALARY > SAL;
+  emp EMPLOYEES%ROWTYPE;
+BEGIN
+  OPEN C1(8000);
+  LOOP
+    FETCH C1 INTO emp;
+    EXIT WHEN C1%NOTFOUND;
+    dbms_output.put_line(emp.FIRST_NAME||' '||emp.SALARY);
+  END LOOP;
+  dbms_output.put_line('He encontrado:'||C1%ROWCOUNT||' Empleados');
+  CLOSE C1;
+END;
+
+SELECT COUNT(*) FROM EMPLOYEES WHERE SALARY > 8000;
+
+--UPDATES Y DELETES con WHERE CURRENT OF
+DECLARE
+  emp EMPLOYEES%ROWTYPE;
+  CURSOR cur IS SELECT * FROM EMPLOYEES FOR UPDATE;
+
+BEGIN
+  OPEN cur;
+  LOOP
+    FETCH cur INTO emp;
+    EXIT WHEN cur%NOTFOUND;
+    IF emp.COMMISSION_PCT IS NOT NULL THEN
+      UPDATE EMPLOYEES SET SALARY=SALARY*1.10 WHERE CURRENT OF cur;
+    ELSE
+      UPDATE EMPLOYEES SET SALARY=SALARY*1.15 WHERE CURRENT OF cur;
+    END IF;
+  END LOOP;
+  CLOSE cur;
+END;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
